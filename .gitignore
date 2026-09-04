@@ -1,0 +1,5 @@
+telemetry/
+fluentbit/
+lxc/
+docs/deploy-lxc.md
+docs/siem-fluentbit.md

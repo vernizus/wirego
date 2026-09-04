@@ -1,0 +1,26 @@
+services:
+  wirego:
+    image: vernizus/wirego:${VERSION:-latest}
+    restart: unless-stopped
+    env_file: .env
+    # WireGuard + nftables require UID 0 and CAP_NET_ADMIN at runtime.
+    user: "0:0"
+    cap_add:
+      - NET_ADMIN        # WireGuard TUN, nftables, netlink
+      - NET_RAW          # ICMP for latency monitoring
+      - NET_BIND_SERVICE # DNS proxy on port 53 (< 1024)
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    network_mode: host
+    tmpfs:
+      - /tmp:noexec,nosuid,size=50m
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      - wirego_data:/data
+
+volumes:
+  wirego_data:
